@@ -1,49 +1,35 @@
-package com.recruitment.homework.model.entity;
+package com.recruitment.homework.model.dto;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.recruitment.homework.model.enums.LoanType;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Entity
-@Table(name = "LOAN")
-@SequenceGenerator(name = "SG_LOAN")
-public class Loan implements VersionedEntity {
+public class LoanDto implements Serializable {
 
-    private static final long serialVersionUID = -7371801500668672288L;
+    private static final long serialVersionUID = 1836134964094811131L;
 
-    @Id
-    @GeneratedValue(generator = "loan-sg")
-    @GenericGenerator(
-            name = "loan-sg",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator"
-    )
     private Long id;
-
+    private final LoanType type = LoanType.DEFAULT;
     @NotNull(message = "loan amount must be set")
-    @Column(name = "AMOUNT")
     private BigDecimal amount;
-
-    @Column(name = "COST")
     private BigDecimal cost;
-
     @NotNull(message = "loan term in days must be set")
-    @Column(name = "TERM")
     private Integer termInDays;
-
-    @NotNull(message = "loan properties must be set")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LOAN_PROPERTIES_ID")
-    private LoanProperties loanProperties;
-
-    @Version
     private Integer version;
 
-    @Override
     public Long getId() {
         return id;
+    }
+
+    public LoanType getType() {
+        return type;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public BigDecimal getAmount() {
@@ -70,36 +56,32 @@ public class Loan implements VersionedEntity {
         this.termInDays = termInDays;
     }
 
-    public LoanProperties getLoanProperties() {
-        return loanProperties;
-    }
-
-    public void setLoanProperties(LoanProperties loanProperties) {
-        this.loanProperties = loanProperties;
-    }
-
-    @Override
     public Integer getVersion() {
         return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Loan loan = (Loan) o;
-        return Objects.equals(id, loan.id);
+        LoanDto loanDto = (LoanDto) o;
+        return Objects.equals(id, loanDto.id) && Objects.equals(version, loanDto.version);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id, version);
     }
 
     @Override
     public String toString() {
-        return "Loan{" +
-                "amount=" + amount +
+        return "LoanDto{" +
+                "type=" + type +
+                ", amount=" + amount +
                 ", cost=" + cost +
                 ", termInDays=" + termInDays +
                 ", version=" + version +
