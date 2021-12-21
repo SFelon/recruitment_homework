@@ -4,13 +4,14 @@ import com.recruitment.homework.exception.LoanAppRuntimeException;
 import com.recruitment.homework.model.entity.Loan;
 import com.recruitment.homework.model.entity.LoanProperties;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 
 public class DefaultLoanValidator implements LoanValidator {
 
     @Override
-    public void validate(Loan loan) {
+    public void validate(@Valid Loan loan) {
         validateMaxAmountWithinRejectionTime(loan.getLoanProperties(), loan);
         validateTermRange(loan.getLoanProperties(), loan.getTermInDays());
         validateAmount(loan.getLoanProperties(), loan.getAmount());

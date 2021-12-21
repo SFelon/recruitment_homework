@@ -6,5 +6,5 @@ import com.recruitment.homework.model.enums.LoanType;
 public interface ExtendableLoanStrategy {
     public boolean canExtend(LoanType loanType);
 
-    public LoanDto extendLoan(Long id, Integer version);
+    public LoanDto extendLoan(Long id);
 }

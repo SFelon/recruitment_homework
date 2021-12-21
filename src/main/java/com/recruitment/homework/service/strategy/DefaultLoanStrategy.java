@@ -11,6 +11,7 @@ import com.recruitment.homework.service.validator.DefaultLoanValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,7 +32,7 @@ public class DefaultLoanStrategy extends AbstractLoanStrategy implements LoanStr
     }
 
     @Override
-    public LoanDto execute(LoanDto loanDto) {
+    public LoanDto issueLoan(LoanDto loanDto) {
         final LoanProperties loanProperties = loadLoanProperties(LOAN_TYPE);
 
         final Loan persistedLoan = calculateAndCreate(loanProperties, loanDto);
@@ -45,9 +46,10 @@ public class DefaultLoanStrategy extends AbstractLoanStrategy implements LoanStr
     }
 
     @Override
-    public LoanDto extendLoan(Long id, Integer version) {
+    @Transactional
+    public LoanDto extendLoan(Long id) {
         final LoanProperties loanProperties = loadLoanProperties(LOAN_TYPE);
-        final Loan loan = getVersioned(id, version);
+        final Loan loan = getLoan(id);
 
         final Loan updatedLoan = extendAndUpdate(loanProperties, loan);
 

@@ -34,4 +34,6 @@ build/
 
 ### GUI ###
 src/main/gui/node_modules
+src/main/gui/node
+src/main/gui/build
 src/main/gui/package-lock.json

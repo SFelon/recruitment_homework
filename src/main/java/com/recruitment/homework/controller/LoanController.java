@@ -1,7 +1,7 @@
 package com.recruitment.homework.controller;
 
 import com.recruitment.homework.model.dto.LoanDto;
-import com.recruitment.homework.model.dto.LoanExtendDto;
+import com.recruitment.homework.model.enums.LoanType;
 import com.recruitment.homework.service.LoanProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +30,9 @@ public class LoanController {
         return new ResponseEntity<>(loanProcessor.process(loanDto), HttpStatus.CREATED);
     }
 
-    @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoanDto> extendLoan(@RequestBody @Valid LoanExtendDto loanExtendDto) {
-        LOGGER.info("Extend loan request for id: {} and type: {}", loanExtendDto.getId(), loanExtendDto.getType());
-        return new ResponseEntity<>(loanProcessor.extend(loanExtendDto), HttpStatus.OK);
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LoanDto> extendLoan(@PathVariable("id") Long id, @RequestParam(name = "type") LoanType type) {
+        LOGGER.info("Extend loan request for id: {} and type: {}", id, type);
+        return new ResponseEntity<>(loanProcessor.extend(id, type), HttpStatus.OK);
     }
 }

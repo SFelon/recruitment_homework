@@ -3,7 +3,6 @@ package com.recruitment.homework.service.builder;
 import com.recruitment.homework.model.entity.Loan;
 import com.recruitment.homework.model.entity.LoanProperties;
 import com.recruitment.homework.service.validator.LoanValidator;
-import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 
@@ -42,10 +41,10 @@ public class LoanBuilder {
     }
 
     public Loan build() {
-        Assert.notNull(this.loan.getAmount(), "Loan amount must be set");
-        Assert.notNull(this.loan.getCost(), "Loan cost must be set");
-        Assert.notNull(this.loan.getTermInDays(), "Loan term must be set");
-        Assert.notNull(this.loan.getLoanProperties(), "Loan properties must be set");
+//        Assert.notNull(this.loan.getAmount(), "Loan amount must be set");
+//        Assert.notNull(this.loan.getCost(), "Loan cost must be set");
+//        Assert.notNull(this.loan.getTermInDays(), "Loan term must be set");
+//        Assert.notNull(this.loan.getLoanProperties(), "Loan properties must be set");
         this.loanValidator.validate(this.loan);
         return this.loan;
     }

@@ -6,5 +6,5 @@ import com.recruitment.homework.model.enums.LoanType;
 public interface LoanStrategy {
     public boolean canProcess(LoanType loanType);
 
-    public LoanDto execute(LoanDto loanDto);
+    public LoanDto issueLoan(LoanDto loanDto);
 }

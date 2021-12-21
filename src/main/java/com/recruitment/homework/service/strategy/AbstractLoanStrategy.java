@@ -30,8 +30,8 @@ public abstract class AbstractLoanStrategy {
                 .orElseThrow(() -> new EntityNotFoundException("Could not find loan properties for type: " + loanType));
     }
 
-    protected Loan getVersioned(Long id, Integer version) {
-        return loanRepository.getById(id);
+    protected Loan getLoan(Long id) {
+        return loanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Could not find loan entity with id: " + id));
     }
 
     protected LoanBuilder getBuilder() {

@@ -1,7 +1,7 @@
 package com.recruitment.homework.service;
 
 import com.recruitment.homework.model.dto.LoanDto;
-import com.recruitment.homework.model.dto.LoanExtendDto;
+import com.recruitment.homework.model.enums.LoanType;
 import com.recruitment.homework.service.strategy.ExtendableLoanStrategy;
 import com.recruitment.homework.service.strategy.LoanStrategy;
 import org.springframework.stereotype.Service;
@@ -34,23 +34,23 @@ public class LoanProcessor {
             throw new UnsupportedOperationException("No loan issuing strategies found for type: " + loanDto.getType());
         }
 
-        return selectedStrategyOpt.get().execute(loanDto);
+        return selectedStrategyOpt.get().issueLoan(loanDto);
     }
 
-    public LoanDto extend(LoanExtendDto loanExtendDto) {
+    public LoanDto extend(Long id, LoanType type) {
         if (extendableLoanStrategies.isEmpty()) {
             throw new UnsupportedOperationException("No loan extending strategies found");
         }
 
         final Optional<ExtendableLoanStrategy> selectedStrategyOpt = extendableLoanStrategies
                 .stream()
-                .filter(loanStrategy -> loanStrategy.canExtend(loanExtendDto.getType()))
+                .filter(loanStrategy -> loanStrategy.canExtend(type))
                 .findFirst();
 
         if (selectedStrategyOpt.isEmpty()) {
-            throw new UnsupportedOperationException("No loan extending strategies found for type: " + loanExtendDto.getType());
+            throw new UnsupportedOperationException("No loan extending strategies found for type: " + type);
         }
 
-        return selectedStrategyOpt.get().extendLoan(loanExtendDto.getId(), loanExtendDto.getVersion());
+        return selectedStrategyOpt.get().extendLoan(id);
     }
 }
