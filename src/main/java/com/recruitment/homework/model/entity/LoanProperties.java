@@ -12,15 +12,14 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "LOAN_PROPERTIES")
-@SequenceGenerator(name = "SG_LOAN_PROPERTIES")
 public class LoanProperties implements HasId {
 
     private static final long serialVersionUID = 8697576799470996039L;
 
     @Id
-    @GeneratedValue(generator = "loan-properties-sg")
+    @GeneratedValue(generator = "LOAN_PROPERTIES_SG")
     @GenericGenerator(
-            name = "loan-properties-sg",
+            name = "LOAN_PROPERTIES_SG",
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator"
     )
     private Long id;
@@ -31,15 +30,15 @@ public class LoanProperties implements HasId {
     private LoanType type;
 
     @NotNull(message = "loan properties percentage cost must be set")
-    @Column(name = "PERCENTAGE_COST")
+    @Column(name = "PERCENTAGE_COST", precision = 1 + 4, scale = 4)
     private BigDecimal percentageCost;
 
     @NotNull(message = "loan properties min amount must be set")
-    @Column(name = "MIN_AMOUNT")
+    @Column(name = "MIN_AMOUNT", precision = 10 + 2, scale = 2)
     private BigDecimal minAmount;
 
     @NotNull(message = "loan properties max amount must be set")
-    @Column(name = "MAX_AMOUNT")
+    @Column(name = "MAX_AMOUNT", precision = 10 + 2, scale = 2)
     private BigDecimal maxAmount;
 
     @NotNull(message = "loan properties min term days must be set")

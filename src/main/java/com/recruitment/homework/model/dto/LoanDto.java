@@ -2,9 +2,12 @@ package com.recruitment.homework.model.dto;
 
 import com.recruitment.homework.model.enums.LoanType;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class LoanDto implements Serializable {
@@ -14,9 +17,11 @@ public class LoanDto implements Serializable {
     private Long id;
     private final LoanType type = LoanType.DEFAULT;
     @NotNull(message = "loan amount must be set")
+    @DecimalMin(value = "0.00", inclusive = false, message = "loan amount must be greater than 0")
     private BigDecimal amount;
     private BigDecimal cost;
     @NotNull(message = "loan term in days must be set")
+    @Min(value = 0, message = "loan term must be greater then 0")
     private Integer termInDays;
     private Integer version;
 
@@ -37,7 +42,8 @@ public class LoanDto implements Serializable {
     }
 
     public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+        this.amount = amount != null ? amount.setScale(2, RoundingMode.HALF_UP)
+                : null;
     }
 
     public BigDecimal getCost() {

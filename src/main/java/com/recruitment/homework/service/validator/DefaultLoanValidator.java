@@ -25,7 +25,7 @@ public class DefaultLoanValidator implements LoanValidator {
     }
 
     private boolean isMaxAmountAsked(LoanProperties loanProperties, BigDecimal amount) {
-        return amount.equals(loanProperties.getMaxAmount());
+        return amount.compareTo(loanProperties.getMaxAmount()) == 0;
     }
 
     private boolean isWithinRejectionTime(LocalTime loanRequestTime, LoanProperties loanProperties) {
@@ -34,25 +34,25 @@ public class DefaultLoanValidator implements LoanValidator {
     }
 
     private boolean isEqualOrAfterRejectionTimeFrom(LocalTime loanRequestTime, LocalTime rejectionFrom) {
-        return loanRequestTime.equals(rejectionFrom) ||
-                loanRequestTime.isAfter(rejectionFrom);
+        return rejectionFrom != null && (loanRequestTime.equals(rejectionFrom) || loanRequestTime.isAfter(rejectionFrom));
     }
 
     private boolean isEqualOrBeforeRejectionTimeTo(LocalTime loanRequestTime, LocalTime rejectionTo) {
-        return loanRequestTime.equals(rejectionTo) ||
-                loanRequestTime.isBefore(rejectionTo);
+        return rejectionTo != null && (loanRequestTime.equals(rejectionTo) || loanRequestTime.isBefore(rejectionTo));
     }
 
     private void validateTermRange(LoanProperties loanProperties, Integer termInDays) {
         if (termInDays < loanProperties.getMinTermDays() || termInDays > loanProperties.getMaxTermDays()) {
-            throw new LoanAppRuntimeException("Cannot issue a loan - term in days is not within specified min/max range");
+            throw new LoanAppRuntimeException("Cannot issue a loan - term in days is not within specified" +
+                    " min(" + loanProperties.getMinTermDays() + ") - max(" + loanProperties.getMaxTermDays() + ") range");
         }
     }
 
     private void validateAmount(LoanProperties loanProperties, BigDecimal amount) {
         if (amount.compareTo(loanProperties.getMinAmount()) < 0 ||
                 amount.compareTo(loanProperties.getMaxAmount()) > 0) {
-            throw new LoanAppRuntimeException("Cannot issue a loan - amount is not within specified min/max range");
+            throw new LoanAppRuntimeException("Cannot issue a loan - amount is not within specified " +
+                    " min(" + loanProperties.getMinAmount() + ") - max(" + loanProperties.getMaxAmount() + ") range");
         }
     }
 }

@@ -9,24 +9,23 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "LOAN")
-@SequenceGenerator(name = "SG_LOAN")
 public class Loan implements VersionedEntity {
 
     private static final long serialVersionUID = -7371801500668672288L;
 
     @Id
-    @GeneratedValue(generator = "loan-sg")
+    @GeneratedValue(generator = "LOAN_SG")
     @GenericGenerator(
-            name = "loan-sg",
+            name = "LOAN_SG",
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator"
     )
     private Long id;
 
     @NotNull(message = "loan amount must be set")
-    @Column(name = "AMOUNT")
+    @Column(name = "AMOUNT", precision = 10 + 2, scale = 2)
     private BigDecimal amount;
 
-    @Column(name = "COST")
+    @Column(name = "COST", precision = 10 + 2, scale = 2)
     private BigDecimal cost;
 
     @NotNull(message = "loan term in days must be set")

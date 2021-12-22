@@ -5,6 +5,7 @@ import com.recruitment.homework.model.entity.LoanProperties;
 import com.recruitment.homework.service.validator.LoanValidator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class LoanBuilder {
     private final Loan loan;
@@ -21,12 +22,13 @@ public class LoanBuilder {
     }
 
     public LoanBuilder amount(BigDecimal amount) {
-        loan.setAmount(amount);
+        loan.setAmount(setScale(amount));
         return this;
     }
 
+
     public LoanBuilder cost(BigDecimal cost) {
-        loan.setCost(cost);
+        loan.setCost(setScale(cost));
         return this;
     }
 
@@ -41,11 +43,11 @@ public class LoanBuilder {
     }
 
     public Loan build() {
-//        Assert.notNull(this.loan.getAmount(), "Loan amount must be set");
-//        Assert.notNull(this.loan.getCost(), "Loan cost must be set");
-//        Assert.notNull(this.loan.getTermInDays(), "Loan term must be set");
-//        Assert.notNull(this.loan.getLoanProperties(), "Loan properties must be set");
         this.loanValidator.validate(this.loan);
         return this.loan;
+    }
+
+    private BigDecimal setScale(BigDecimal amount) {
+        return amount != null ? amount.setScale(2, RoundingMode.HALF_UP) : null;
     }
 }

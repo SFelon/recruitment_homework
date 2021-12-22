@@ -2,6 +2,9 @@ package com.recruitment.homework.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -25,8 +28,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleConstraintException(ConstraintViolationException ex) {
         final List<String> errors = new ArrayList<>();
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            errors.add(violation.getRootBeanClass().getName() + "-" +
-                    violation.getPropertyPath() + ": " + violation.getMessage());
+            errors.add(violation.getRootBeanClass().getName() + "[" +
+                    violation.getPropertyPath() + "]: " + violation.getMessage());
+        }
+        final ExceptionResponse response = prepareResponse(String.join(", ", errors));
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionResponse> handleMethodArgumentException(MethodArgumentNotValidException ex) {
+        final List<String> errors = new ArrayList<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.add("[" + error.getField() + "]: " + error.getDefaultMessage());
+        }
+        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+            errors.add("[" + error.getObjectName() + "]: " + error.getDefaultMessage());
         }
         final ExceptionResponse response = prepareResponse(String.join(", ", errors));
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

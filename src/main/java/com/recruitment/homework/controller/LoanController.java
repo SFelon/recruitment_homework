@@ -30,8 +30,8 @@ public class LoanController {
         return new ResponseEntity<>(loanProcessor.process(loanDto), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoanDto> extendLoan(@PathVariable("id") Long id, @RequestParam(name = "type") LoanType type) {
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<LoanDto> extendLoan(@PathVariable("id") Long id, @RequestParam(name = "type", defaultValue = "DEFAULT") LoanType type) {
         LOGGER.info("Extend loan request for id: {} and type: {}", id, type);
         return new ResponseEntity<>(loanProcessor.extend(id, type), HttpStatus.OK);
     }
