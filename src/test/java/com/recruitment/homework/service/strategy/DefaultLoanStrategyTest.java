@@ -1,7 +1,7 @@
 package com.recruitment.homework.service.strategy;
 
 import com.recruitment.homework.exception.LoanAppRuntimeException;
-import com.recruitment.homework.model.dto.LoanDto;
+import com.recruitment.homework.model.dto.LoanInDto;
 import com.recruitment.homework.model.entity.Loan;
 import com.recruitment.homework.model.entity.LoanProperties;
 import com.recruitment.homework.model.enums.LoanType;
@@ -46,7 +46,7 @@ class DefaultLoanStrategyTest {
     @Test
     void issueLoan() {
         //given
-        final LoanDto dto = prepareDto();
+        final LoanInDto dto = prepareDto();
         final LoanProperties properties = prepareProps();
         when(loanPropertiesRepository.findByType(LoanType.DEFAULT)).thenReturn(Optional.of(properties));
         when(loanRepository.save(loanPersistCaptor.capture())).thenReturn(new Loan());
@@ -104,8 +104,8 @@ class DefaultLoanStrategyTest {
         verify(loanRepository).findById(1L);
     }
 
-    private LoanDto prepareDto() {
-        final LoanDto dto = new LoanDto();
+    private LoanInDto prepareDto() {
+        final LoanInDto dto = new LoanInDto();
         dto.setAmount(bd(1000.50));
         dto.setTermInDays(30);
         return dto;

@@ -1,6 +1,7 @@
 package com.recruitment.homework.service;
 
-import com.recruitment.homework.model.dto.LoanDto;
+import com.recruitment.homework.model.dto.LoanInDto;
+import com.recruitment.homework.model.dto.LoanOutDto;
 import com.recruitment.homework.model.enums.LoanType;
 import com.recruitment.homework.service.strategy.ExtendableLoanStrategy;
 import com.recruitment.homework.service.strategy.LoanStrategy;
@@ -20,7 +21,7 @@ public class LoanProcessor {
         this.extendableLoanStrategies = extendableLoanStrategies;
     }
 
-    public LoanDto process(LoanDto loanDto) {
+    public LoanOutDto process(LoanInDto loanDto) {
         if (loanStrategies.isEmpty()) {
             throw new UnsupportedOperationException("No loan issuing strategies found");
         }
@@ -37,14 +38,14 @@ public class LoanProcessor {
         return selectedStrategyOpt.get().issueLoan(loanDto);
     }
 
-    public LoanDto extend(Long id, LoanType type) {
+    public LoanOutDto extend(Long id, LoanType type) {
         if (extendableLoanStrategies.isEmpty()) {
             throw new UnsupportedOperationException("No loan extending strategies found");
         }
 
         final Optional<ExtendableLoanStrategy> selectedStrategyOpt = extendableLoanStrategies
                 .stream()
-                .filter(loanStrategy -> loanStrategy.canExtend(type))
+                .filter(loanStrategy -> loanStrategy.canProcess(type))
                 .findFirst();
 
         if (selectedStrategyOpt.isEmpty()) {

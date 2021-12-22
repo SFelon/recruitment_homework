@@ -2,6 +2,7 @@ package com.recruitment.homework.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler {
                     violation.getPropertyPath() + "]: " + violation.getMessage());
         }
         final ExceptionResponse response = prepareResponse(String.join(", ", errors));
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> handleNotReadableException(HttpMessageNotReadableException ex) {
+        final ExceptionResponse response = prepareResponse(ex.getMessage().substring(0, ex.getMessage().indexOf(';')));
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

@@ -26,7 +26,6 @@ public class LoanBuilder {
         return this;
     }
 
-
     public LoanBuilder cost(BigDecimal cost) {
         loan.setCost(setScale(cost));
         return this;

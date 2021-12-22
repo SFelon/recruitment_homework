@@ -1,8 +1,8 @@
 package com.recruitment.homework.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.recruitment.homework.model.dto.LoanDto;
-import com.recruitment.homework.model.enums.LoanType;
+import com.recruitment.homework.model.dto.LoanInDto;
+import com.recruitment.homework.model.dto.LoanOutDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,7 +32,7 @@ class LoanControllerIntegrationTest {
 
     @Test
     void issueLoan() throws Exception {
-        final LoanDto dto = new LoanDto();
+        final LoanInDto dto = new LoanInDto();
         dto.setAmount(BigDecimal.valueOf(1000));
         dto.setTermInDays(150);
 
@@ -42,18 +42,17 @@ class LoanControllerIntegrationTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        final LoanDto responseBody = objectMapper.readValue(result.getResponse().getContentAsString(), LoanDto.class);
+        final LoanOutDto responseBody = objectMapper.readValue(result.getResponse().getContentAsString(), LoanOutDto.class);
         assertEquals(bd(1000.00), responseBody.getAmount());
         assertEquals(bd(100.00), responseBody.getCost());
         assertEquals(150, responseBody.getTermInDays());
-        assertEquals(LoanType.DEFAULT, responseBody.getType());
         assertNotNull(responseBody.getId());
         assertNotNull(responseBody.getVersion());
     }
 
     @Test
-    void extendLoan() throws Exception{
-        final LoanDto dto = new LoanDto();
+    void extendLoan() throws Exception {
+        final LoanInDto dto = new LoanInDto();
         dto.setAmount(BigDecimal.valueOf(1000));
         dto.setTermInDays(150);
 
@@ -63,18 +62,17 @@ class LoanControllerIntegrationTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        final LoanDto createdLoan = objectMapper.readValue(result.getResponse().getContentAsString(), LoanDto.class);
+        final LoanOutDto createdLoan = objectMapper.readValue(result.getResponse().getContentAsString(), LoanOutDto.class);
 
         final MvcResult extendResponse = mockMvc.perform(patch("/loan/{id}", createdLoan.getId())
                         .param("type", "DEFAULT"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final LoanDto responseBody = objectMapper.readValue(extendResponse.getResponse().getContentAsString(), LoanDto.class);
+        final LoanOutDto responseBody = objectMapper.readValue(extendResponse.getResponse().getContentAsString(), LoanOutDto.class);
         assertEquals(bd(1000.00), responseBody.getAmount());
         assertEquals(bd(100.00), responseBody.getCost());
         assertEquals(180, responseBody.getTermInDays());
-        assertEquals(LoanType.DEFAULT, responseBody.getType());
         assertNotNull(responseBody.getId());
         assertNotNull(responseBody.getVersion());
     }

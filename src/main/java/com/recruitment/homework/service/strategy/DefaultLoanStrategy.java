@@ -1,6 +1,7 @@
 package com.recruitment.homework.service.strategy;
 
-import com.recruitment.homework.model.dto.LoanDto;
+import com.recruitment.homework.model.dto.LoanInDto;
+import com.recruitment.homework.model.dto.LoanOutDto;
 import com.recruitment.homework.model.entity.Loan;
 import com.recruitment.homework.model.entity.LoanProperties;
 import com.recruitment.homework.model.enums.LoanType;
@@ -17,7 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Service
-public class DefaultLoanStrategy extends AbstractLoanStrategy implements LoanStrategy, ExtendableLoanStrategy {
+public class DefaultLoanStrategy extends AbstractLoanStrategy implements ExtendableLoanStrategy {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AbstractLoanStrategy.class);
     private final static LoanType LOAN_TYPE = LoanType.DEFAULT;
@@ -32,22 +33,17 @@ public class DefaultLoanStrategy extends AbstractLoanStrategy implements LoanStr
     }
 
     @Override
-    public LoanDto issueLoan(LoanDto loanDto) {
+    public LoanOutDto issueLoan(LoanInDto loanInDto) {
         final LoanProperties loanProperties = loadLoanProperties(LOAN_TYPE);
 
-        final Loan persistedLoan = calculateAndCreate(loanProperties, loanDto);
+        final Loan persistedLoan = calculateAndCreate(loanProperties, loanInDto);
 
         return convertToDto(persistedLoan);
     }
 
     @Override
-    public boolean canExtend(LoanType loanType) {
-        return LOAN_TYPE == loanType;
-    }
-
-    @Override
     @Transactional
-    public LoanDto extendLoan(Long id) {
+    public LoanOutDto extendLoan(Long id) {
         final LoanProperties loanProperties = loadLoanProperties(LOAN_TYPE);
         final Loan loan = getLoan(id);
 
@@ -64,9 +60,9 @@ public class DefaultLoanStrategy extends AbstractLoanStrategy implements LoanStr
         return persistLoan(loanToUpdate);
     }
 
-    private Loan calculateAndCreate(LoanProperties loanProperties, LoanDto loanDto) {
-        final BigDecimal loanCost = calculateLoanCost(loanProperties, loanDto.getAmount());
-        final Loan newLoan = createLoan(loanProperties, loanDto, loanCost);
+    private Loan calculateAndCreate(LoanProperties loanProperties, LoanInDto loanInDto) {
+        final BigDecimal loanCost = calculateLoanCost(loanProperties, loanInDto.getAmount());
+        final Loan newLoan = createLoan(loanProperties, loanInDto, loanCost);
         LOGGER.info("Persisting newly submitted loan for amount: {} and term: {}",
                 newLoan.getAmount(), newLoan.getTermInDays());
         return persistLoan(newLoan);
@@ -76,10 +72,10 @@ public class DefaultLoanStrategy extends AbstractLoanStrategy implements LoanStr
         return amount.multiply(loanProperties.getPercentageCost()).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private Loan createLoan(LoanProperties loanProperties, LoanDto loanDto, BigDecimal loanCost) {
+    private Loan createLoan(LoanProperties loanProperties, LoanInDto loanInDto, BigDecimal loanCost) {
         final LoanBuilder builder = getBuilder();
-        builder.amount(loanDto.getAmount());
-        builder.term(loanDto.getTermInDays());
+        builder.amount(loanInDto.getAmount());
+        builder.term(loanInDto.getTermInDays());
         builder.cost(loanCost);
         builder.properties(loanProperties);
         return builder.build();

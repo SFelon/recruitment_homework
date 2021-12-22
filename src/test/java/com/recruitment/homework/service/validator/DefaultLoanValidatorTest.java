@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 
-import static com.recruitment.homework.utils.TestUtils.bd;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

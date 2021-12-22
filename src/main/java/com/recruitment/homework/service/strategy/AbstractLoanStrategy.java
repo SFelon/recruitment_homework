@@ -1,6 +1,6 @@
 package com.recruitment.homework.service.strategy;
 
-import com.recruitment.homework.model.dto.LoanDto;
+import com.recruitment.homework.model.dto.LoanOutDto;
 import com.recruitment.homework.model.entity.Loan;
 import com.recruitment.homework.model.entity.LoanProperties;
 import com.recruitment.homework.model.enums.LoanType;
@@ -46,8 +46,8 @@ public abstract class AbstractLoanStrategy {
         return loanRepository.save(loan);
     }
 
-    protected LoanDto convertToDto(Loan persistedLoan) {
-        final LoanDto dto = new LoanDto();
+    protected LoanOutDto convertToDto(Loan persistedLoan) {
+        final LoanOutDto dto = new LoanOutDto();
         dto.setId(persistedLoan.getId());
         dto.setAmount(persistedLoan.getAmount());
         dto.setCost(persistedLoan.getCost());

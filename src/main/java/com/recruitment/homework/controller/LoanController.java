@@ -1,6 +1,7 @@
 package com.recruitment.homework.controller;
 
-import com.recruitment.homework.model.dto.LoanDto;
+import com.recruitment.homework.model.dto.LoanInDto;
+import com.recruitment.homework.model.dto.LoanOutDto;
 import com.recruitment.homework.model.enums.LoanType;
 import com.recruitment.homework.service.LoanProcessor;
 import org.slf4j.Logger;
@@ -24,14 +25,14 @@ public class LoanController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoanDto> issueLoan(@RequestBody @Valid LoanDto loanDto) {
+    public ResponseEntity<LoanOutDto> issueLoan(@RequestBody @Valid LoanInDto loanInDto) {
         LOGGER.info("New loan request has been submitted, amount: {}, term: {}",
-                loanDto.getAmount(), loanDto.getTermInDays());
-        return new ResponseEntity<>(loanProcessor.process(loanDto), HttpStatus.CREATED);
+                loanInDto.getAmount(), loanInDto.getTermInDays());
+        return new ResponseEntity<>(loanProcessor.process(loanInDto), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<LoanDto> extendLoan(@PathVariable("id") Long id, @RequestParam(name = "type", defaultValue = "DEFAULT") LoanType type) {
+    public ResponseEntity<LoanOutDto> extendLoan(@PathVariable("id") Long id, @RequestParam(name = "type", defaultValue = "DEFAULT") LoanType type) {
         LOGGER.info("Extend loan request for id: {} and type: {}", id, type);
         return new ResponseEntity<>(loanProcessor.extend(id, type), HttpStatus.OK);
     }
